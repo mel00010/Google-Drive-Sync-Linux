@@ -3,12 +3,12 @@
 function usage ()
 {
        echo "Usage:"
-       echo "        sync [--version|--repeat|--help|--once]"
+       echo "        sync [--version|--repeat|--help|--once|--number-of-times]"
 }
 
 function version ()
 {
-        echo "Google Drive Sync Version 1.0.7"
+        echo "Google Drive Sync Version 1.0.8"
 }
 function sync ()
 {
@@ -30,35 +30,52 @@ function push ()
         drive push -ignore-conflict=true -r=true -convert=false -ignore-name-clashes=true -no-prompt=true -no-clobber=false -force=false
 }
 
-case $1 in
-        --version|-v)
-                version
-                exit 0
-        ;;
-        --help|-h)
-                usage
-                exit 0
-        ;;
-        --repeat|-r)
-                echo "Syncing Google Drive on repeat."
-                echo "Press [CTRL+C] three times to stop.."
-                while true
-                do
+while test "$1" != "" ; do
+        case $1 in
+                --version|-v)
+                        version
+                        exit 0
+                ;;
+                --help|-h)
+                        usage
+                        exit 0
+                ;;
+                --repeat|-r)
+                        echo "Syncing Google Drive on repeat."
+                        echo "Press [CTRL+C] three times to stop.."
+                        while true
+                        do
+                                sync
+                                sleep 60
+                        done 
+                        exit 0
+                ;;
+                --number-of-times|-n)
+                        echo "Syncing Google Drive $2 times."
+                        echo "Press [CTRL+C] three times to stop.."
+                        N=1
+                        while test "$N" -le "$2"
+                        do
+                                echo "Run $N"
+                                sync
+                                N=$[N+1]
+                                sleep 60
+                        done 
+                        exit 0
+                ;;
+                --once|-o)
+                        echo "Syncing Google Drive once."
+                        echo "Press [CTRL+C] twice to stop.."
                         sync
-                        sleep 60
-                done 
-                exit 0
-        ;;
-        --once|-o)
-                echo "Syncing Google Drive once."
-                echo "Press [CTRL+C] twice to stop.."
-                sync
-                exit 0
-        ;;
-        -*)
-                echo "Error: no such option $1"
-                usage
-                exit 1
-        ;;
-esac
+                        exit 0
+                ;;
+                -*)
+                        echo "Error: no such option $1"
+                        usage
+                        exit 1
+                ;;
+        esac
+        shift
+done
+version
 usage
