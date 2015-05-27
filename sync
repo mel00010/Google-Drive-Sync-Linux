@@ -8,7 +8,7 @@ function usage ()
 
 function version ()
 {
-       echo "Google Drive Sync Version 1.0.6"
+        echo "Google Drive Sync Version 1.0.7"
 }
 function sync ()
 {
@@ -40,10 +40,10 @@ case $1 in
                 exit 0
         ;;
         --repeat|-r)
+                echo "Syncing Google Drive on repeat."
+                echo "Press [CTRL+C] three times to stop.."
                 while true
                 do
-                        echo "Syncing Google Drive on repeat."
-                        echo "Press [CTRL+C] three times to stop.."
                         sync
                         sleep 60
                 done 
